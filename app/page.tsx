@@ -1,28 +1,66 @@
-import Link from "next/link"
+"use client"
+
+import { useState } from "react"
+import { parseRepositoryUrl } from "@/lib/github/parse-repository-url"
 
 export default function Home() {
+  const [repositoryUrl, setRepositoryUrl] = useState("")
+  const [error, setError] = useState("")
+  const [parsedRepository, setParsedRepository] = useState<string | null>(null)
+
+  function handleAnalyze() {
+    const parsed = parseRepositoryUrl(repositoryUrl)
+
+    if (!parsed) {
+      setParsedRepository(null)
+      setError("Enter a valid public GitHub repository URL.")
+      return
+    }
+
+    setError("")
+    setParsedRepository(parsed.fullName)
+  }
+
+  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === "Enter") {
+      handleAnalyze()
+    }
+  }
+
   return (
     <main className="min-h-screen bg-background text-foreground">
       {/* Header */}
       <header className="border-b">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-          <Link href="/" className="flex items-center gap-2">
+          <a href="/" className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-foreground text-sm font-bold text-background">
               R
             </div>
+
             <span className="text-lg font-semibold tracking-tight">
               RepoLens
             </span>
-          </Link>
+          </a>
 
           <div className="hidden items-center gap-6 text-sm text-muted-foreground sm:flex">
-            <a href="#how-it-works" className="transition-colors hover:text-foreground">
+            <a
+              href="#how-it-works"
+              className="transition-colors hover:text-foreground"
+            >
               How it works
             </a>
-            <a href="#analysis" className="transition-colors hover:text-foreground">
+
+            <a
+              href="#analysis"
+              className="transition-colors hover:text-foreground"
+            >
               Analysis
             </a>
-            <a href="#about" className="transition-colors hover:text-foreground">
+
+            <a
+              href="#about"
+              className="transition-colors hover:text-foreground"
+            >
               About
             </a>
           </div>
@@ -52,24 +90,65 @@ export default function Home() {
 
             {/* Repository input */}
             <div className="mx-auto mt-10 max-w-2xl">
-              <div className="flex flex-col gap-3 rounded-xl border bg-card p-2 shadow-sm sm:flex-row">
+              <div
+                className={`flex flex-col gap-3 rounded-xl border bg-card p-2 shadow-sm sm:flex-row ${
+                  error ? "border-destructive" : ""
+                }`}
+              >
                 <input
                   type="url"
+                  value={repositoryUrl}
+                  onChange={(event) => {
+                    setRepositoryUrl(event.target.value)
+                    setError("")
+                    setParsedRepository(null)
+                  }}
+                  onKeyDown={handleKeyDown}
                   placeholder="https://github.com/owner/repository"
+                  aria-label="GitHub repository URL"
+                  aria-invalid={Boolean(error)}
                   className="h-12 min-w-0 flex-1 rounded-lg bg-transparent px-4 text-sm outline-none placeholder:text-muted-foreground"
                 />
 
                 <button
                   type="button"
+                  onClick={handleAnalyze}
                   className="h-12 rounded-lg bg-foreground px-6 text-sm font-medium text-background transition-opacity hover:opacity-90"
                 >
                   Analyze repository
                 </button>
               </div>
 
-              <p className="mt-3 text-xs text-muted-foreground">
-                Public GitHub repositories only · Static analysis · No code execution
-              </p>
+              {error ? (
+                <p
+                  role="alert"
+                  className="mt-3 text-left text-xs text-destructive"
+                >
+                  {error}
+                </p>
+              ) : parsedRepository ? (
+                <div
+                  role="status"
+                  className="mt-3 rounded-lg border border-foreground/20 bg-muted/40 px-4 py-3 text-left"
+                >
+                  <p className="text-xs text-muted-foreground">
+                    Repository recognized
+                  </p>
+
+                  <p className="mt-1 font-mono text-sm font-medium">
+                    {parsedRepository}
+                  </p>
+
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    GitHub connection will be added in the next step.
+                  </p>
+                </div>
+              ) : (
+                <p className="mt-3 text-xs text-muted-foreground">
+                  Public GitHub repositories only · Static analysis · No code
+                  execution
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -82,6 +161,7 @@ export default function Home() {
             <p className="text-sm font-medium text-muted-foreground">
               SAMPLE ANALYSIS
             </p>
+
             <h2 className="mt-2 text-3xl font-semibold tracking-tight">
               A report built for developers.
             </h2>
@@ -94,6 +174,7 @@ export default function Home() {
                   <p className="text-sm text-muted-foreground">
                     facebook / react
                   </p>
+
                   <h3 className="mt-1 text-xl font-semibold">
                     Repository Health
                   </h3>
@@ -102,6 +183,7 @@ export default function Home() {
                 <div className="flex items-center gap-3">
                   <div className="text-right">
                     <div className="text-3xl font-bold">82</div>
+
                     <div className="text-xs text-muted-foreground">
                       out of 100
                     </div>
@@ -122,7 +204,10 @@ export default function Home() {
                 ["Security", "79"],
               ].map(([name, score]) => (
                 <div key={name} className="p-6">
-                  <div className="text-sm text-muted-foreground">{name}</div>
+                  <div className="text-sm text-muted-foreground">
+                    {name}
+                  </div>
+
                   <div className="mt-2 text-2xl font-semibold">{score}</div>
 
                   <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-muted">
@@ -241,7 +326,9 @@ export default function Home() {
                 className="rounded-xl border bg-card p-5"
               >
                 <div className="h-2 w-2 rounded-full bg-foreground" />
+
                 <h3 className="mt-4 font-medium">{category}</h3>
+
                 <p className="mt-2 text-sm leading-5 text-muted-foreground">
                   Deterministic analysis with transparent findings and
                   recommendations.
