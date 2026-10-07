@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 
+import { structureAnalyzer } from "@/lib/analyzers/structure"
 import { parseRepositoryUrl } from "@/lib/github/parse-repository-url"
 import { getRepositoryMetadata } from "@/lib/github/repository"
 import { getRepositoryTree } from "@/lib/github/tree"
@@ -37,9 +38,17 @@ export async function POST(request: Request) {
       repository.defaultBranch
     )
 
+    const structure = await structureAnalyzer.analyze({
+      repository,
+      tree,
+    })
+
     return NextResponse.json({
       repository,
       tree,
+      analysis: {
+        structure,
+      },
     })
   } catch (error) {
     console.error("Repository lookup failed:", error)
