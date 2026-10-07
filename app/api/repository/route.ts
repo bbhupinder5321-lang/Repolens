@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 
+import { documentationAnalyzer } from "@/lib/analyzers/documentation"
 import { structureAnalyzer } from "@/lib/analyzers/structure"
 import { parseRepositoryUrl } from "@/lib/github/parse-repository-url"
 import { getRepositoryMetadata } from "@/lib/github/repository"
@@ -43,11 +44,18 @@ export async function POST(request: Request) {
       tree,
     })
 
+    const documentation =
+      await documentationAnalyzer.analyze({
+        repository,
+        tree,
+      })
+
     return NextResponse.json({
       repository,
       tree,
       analysis: {
         structure,
+        documentation,
       },
     })
   } catch (error) {
@@ -63,3 +71,4 @@ export async function POST(request: Request) {
     )
   }
 }
+
