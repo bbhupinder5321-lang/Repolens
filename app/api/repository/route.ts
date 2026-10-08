@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 
+import { activityAnalyzer } from "@/lib/analyzers/activity"
 import { dependencyAnalyzer } from "@/lib/analyzers/dependency"
 import { documentationAnalyzer } from "@/lib/analyzers/documentation"
 import { maintainabilityAnalyzer } from "@/lib/analyzers/maintainability"
@@ -72,6 +73,9 @@ export async function POST(request: Request) {
         context
       )
 
+    const activity =
+      await activityAnalyzer.analyze(context)
+
     return NextResponse.json({
       repository,
       tree,
@@ -82,6 +86,7 @@ export async function POST(request: Request) {
         dependency,
         security,
         maintainability,
+        activity,
       },
     })
   } catch (error) {
