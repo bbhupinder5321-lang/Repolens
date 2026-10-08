@@ -3,6 +3,7 @@ import { NextResponse } from "next/server"
 import { activityAnalyzer } from "@/lib/analyzers/activity"
 import { dependencyAnalyzer } from "@/lib/analyzers/dependency"
 import { documentationAnalyzer } from "@/lib/analyzers/documentation"
+import { githubConfigAnalyzer } from "@/lib/analyzers/github-config"
 import { maintainabilityAnalyzer } from "@/lib/analyzers/maintainability"
 import { securityAnalyzer } from "@/lib/analyzers/security"
 import { structureAnalyzer } from "@/lib/analyzers/structure"
@@ -76,6 +77,11 @@ export async function POST(request: Request) {
     const activity =
       await activityAnalyzer.analyze(context)
 
+    const githubConfig =
+      await githubConfigAnalyzer.analyze(
+        context
+      )
+
     return NextResponse.json({
       repository,
       tree,
@@ -87,6 +93,7 @@ export async function POST(request: Request) {
         security,
         maintainability,
         activity,
+        githubConfig,
       },
     })
   } catch (error) {
