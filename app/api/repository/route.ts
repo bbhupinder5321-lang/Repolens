@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 
 import { documentationAnalyzer } from "@/lib/analyzers/documentation"
 import { structureAnalyzer } from "@/lib/analyzers/structure"
+import { testingAnalyzer } from "@/lib/analyzers/testing"
 import { parseRepositoryUrl } from "@/lib/github/parse-repository-url"
 import { getRepositoryMetadata } from "@/lib/github/repository"
 import { getRepositoryTree } from "@/lib/github/tree"
@@ -50,12 +51,18 @@ export async function POST(request: Request) {
         tree,
       })
 
+    const testing = await testingAnalyzer.analyze({
+      repository,
+      tree,
+    })
+
     return NextResponse.json({
       repository,
       tree,
       analysis: {
         structure,
         documentation,
+        testing,
       },
     })
   } catch (error) {
@@ -70,5 +77,4 @@ export async function POST(request: Request) {
       }
     )
   }
-}
-
+} 
