@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 
 import { activityAnalyzer } from "@/lib/analyzers/activity"
+import { codeStatisticsAnalyzer } from "@/lib/analyzers/code-statistics"
 import { dependencyAnalyzer } from "@/lib/analyzers/dependency"
 import { documentationAnalyzer } from "@/lib/analyzers/documentation"
 import { githubConfigAnalyzer } from "@/lib/analyzers/github-config"
@@ -82,6 +83,11 @@ export async function POST(request: Request) {
         context
       )
 
+    const codeStatistics =
+      await codeStatisticsAnalyzer.analyze(
+        context
+      )
+
     return NextResponse.json({
       repository,
       tree,
@@ -94,6 +100,7 @@ export async function POST(request: Request) {
         maintainability,
         activity,
         githubConfig,
+        codeStatistics,
       },
     })
   } catch (error) {
