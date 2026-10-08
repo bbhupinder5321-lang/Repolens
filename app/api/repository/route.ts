@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 
 import { dependencyAnalyzer } from "@/lib/analyzers/dependency"
 import { documentationAnalyzer } from "@/lib/analyzers/documentation"
+import { maintainabilityAnalyzer } from "@/lib/analyzers/maintainability"
 import { securityAnalyzer } from "@/lib/analyzers/security"
 import { structureAnalyzer } from "@/lib/analyzers/structure"
 import { testingAnalyzer } from "@/lib/analyzers/testing"
@@ -66,6 +67,11 @@ export async function POST(request: Request) {
     const security =
       await securityAnalyzer.analyze(context)
 
+    const maintainability =
+      await maintainabilityAnalyzer.analyze(
+        context
+      )
+
     return NextResponse.json({
       repository,
       tree,
@@ -75,6 +81,7 @@ export async function POST(request: Request) {
         testing,
         dependency,
         security,
+        maintainability,
       },
     })
   } catch (error) {
