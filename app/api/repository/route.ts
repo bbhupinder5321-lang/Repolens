@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 
+import { dependencyAnalyzer } from "@/lib/analyzers/dependency"
 import { documentationAnalyzer } from "@/lib/analyzers/documentation"
 import { structureAnalyzer } from "@/lib/analyzers/structure"
 import { testingAnalyzer } from "@/lib/analyzers/testing"
@@ -29,10 +30,11 @@ export async function POST(request: Request) {
       )
     }
 
-    const repository = await getRepositoryMetadata(
-      parsed.owner,
-      parsed.repository
-    )
+    const repository =
+      await getRepositoryMetadata(
+        parsed.owner,
+        parsed.repository
+      )
 
     const tree = await getRepositoryTree(
       repository.owner,
@@ -40,21 +42,24 @@ export async function POST(request: Request) {
       repository.defaultBranch
     )
 
-    const structure = await structureAnalyzer.analyze({
+    const context = {
       repository,
       tree,
-    })
+    }
+
+    const structure =
+      await structureAnalyzer.analyze(context)
 
     const documentation =
-      await documentationAnalyzer.analyze({
-        repository,
-        tree,
-      })
+      await documentationAnalyzer.analyze(
+        context
+      )
 
-    const testing = await testingAnalyzer.analyze({
-      repository,
-      tree,
-    })
+    const testing =
+      await testingAnalyzer.analyze(context)
+
+    const dependency =
+      await dependencyAnalyzer.analyze(context)
 
     return NextResponse.json({
       repository,
@@ -63,18 +68,23 @@ export async function POST(request: Request) {
         structure,
         documentation,
         testing,
+        dependency,
       },
     })
   } catch (error) {
-    console.error("Repository lookup failed:", error)
+    console.error(
+      "Repository lookup failed:",
+      error
+    )
 
     return NextResponse.json(
       {
-        error: "Unable to retrieve this GitHub repository.",
+        error:
+          "Unable to retrieve this GitHub repository.",
       },
       {
         status: 404,
       }
     )
   }
-} 
+}
