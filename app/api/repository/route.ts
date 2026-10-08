@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 
 import { dependencyAnalyzer } from "@/lib/analyzers/dependency"
 import { documentationAnalyzer } from "@/lib/analyzers/documentation"
+import { securityAnalyzer } from "@/lib/analyzers/security"
 import { structureAnalyzer } from "@/lib/analyzers/structure"
 import { testingAnalyzer } from "@/lib/analyzers/testing"
 import { parseRepositoryUrl } from "@/lib/github/parse-repository-url"
@@ -22,7 +23,8 @@ export async function POST(request: Request) {
     if (!parsed) {
       return NextResponse.json(
         {
-          error: "Enter a valid GitHub repository URL.",
+          error:
+            "Enter a valid GitHub repository URL.",
         },
         {
           status: 400,
@@ -61,6 +63,9 @@ export async function POST(request: Request) {
     const dependency =
       await dependencyAnalyzer.analyze(context)
 
+    const security =
+      await securityAnalyzer.analyze(context)
+
     return NextResponse.json({
       repository,
       tree,
@@ -69,6 +74,7 @@ export async function POST(request: Request) {
         documentation,
         testing,
         dependency,
+        security,
       },
     })
   } catch (error) {
