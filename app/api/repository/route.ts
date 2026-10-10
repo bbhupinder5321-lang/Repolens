@@ -9,6 +9,9 @@ import { maintainabilityAnalyzer } from "@/lib/analyzers/maintainability"
 import { securityAnalyzer } from "@/lib/analyzers/security"
 import { structureAnalyzer } from "@/lib/analyzers/structure"
 import { testingAnalyzer } from "@/lib/analyzers/testing"
+
+import { calculateRepositoryScore } from "@/lib/analyzer/scoring"
+
 import { parseRepositoryUrl } from "@/lib/github/parse-repository-url"
 import { getRepositoryMetadata } from "@/lib/github/repository"
 import { getRepositoryTree } from "@/lib/github/tree"
@@ -88,20 +91,33 @@ export async function POST(request: Request) {
         context
       )
 
+    const analysis = {
+      structure,
+      documentation,
+      testing,
+      dependency,
+      security,
+      maintainability,
+      activity,
+      githubConfig,
+      codeStatistics,
+    }
+
+    const score = calculateRepositoryScore([
+      structure,
+      documentation,
+      testing,
+      security,
+      maintainability,
+      activity,
+      githubConfig,
+    ])
+
     return NextResponse.json({
       repository,
       tree,
-      analysis: {
-        structure,
-        documentation,
-        testing,
-        dependency,
-        security,
-        maintainability,
-        activity,
-        githubConfig,
-        codeStatistics,
-      },
+      analysis,
+      score,
     })
   } catch (error) {
     console.error(
