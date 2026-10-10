@@ -1,12 +1,10 @@
+
 import type { Analyzer } from "@/lib/analyzer/analyzer"
 import type { AnalyzerContext } from "@/lib/analyzer/context"
 import type {
   AnalysisResult,
   Finding,
 } from "@/lib/analyzer/types"
-
-const DAYS_PER_MONTH = 30
-const DAYS_PER_YEAR = 365
 
 function parseDate(
   value: string | null
@@ -202,9 +200,7 @@ export const activityAnalyzer: Analyzer = {
       })
     }
 
-    if (
-      isFork
-    ) {
+    if (isFork) {
       findings.push({
         id: "activity-forked-repository",
         category: "Activity",
