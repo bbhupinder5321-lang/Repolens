@@ -286,14 +286,16 @@ export const dependencyAnalyzer: Analyzer = {
     )
 
     const missingRootLockfiles =
-      rootManifests.filter(
-        (manifest) =>
-          manifest.lockRequired &&
-          !hasLockfileNearManifest(
-            manifest,
-            detectedLockFiles
+      context.tree.truncated
+        ? []
+        : rootManifests.filter(
+            (manifest) =>
+              manifest.lockRequired &&
+              !hasLockfileNearManifest(
+                manifest,
+                detectedLockFiles
+              )
           )
-      )
 
     const findings: Finding[] = []
 

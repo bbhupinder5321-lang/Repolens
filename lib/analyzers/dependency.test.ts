@@ -1,4 +1,4 @@
-
+﻿
 import { describe, expect, it } from "vitest"
 import type { AnalyzerContext } from "../analyzer/context"
 import { dependencyAnalyzer } from "./dependency"
@@ -336,5 +336,32 @@ describe("dependencyAnalyzer", () => {
       metrics: expect.any(Object),
       recommendations: [],
     })
+  })
+
+  it("does not report a missing lockfile when the repository tree is truncated", async () => {
+    const result = await analyze(
+      [{ path: "package.json" }],
+      { truncated: true }
+    )
+
+    expect(result.findings).not.toContainEqual(
+      expect.objectContaining({
+        id: "dependency-missing-root-lockfile-package.json",
+      })
+    )
+  })
+
+  it("still checks lockfiles when analysis is limited but the file list is available", async () => {
+    const result = await analyze(
+      [{ path: "package.json" }],
+      { analysisLimited: true }
+    )
+
+    expect(result.findings).toContainEqual(
+      expect.objectContaining({
+        id: "dependency-missing-root-lockfile-package.json",
+        severity: "medium",
+      })
+    )
   })
 })
