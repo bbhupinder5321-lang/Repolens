@@ -104,6 +104,12 @@ const SEVERITY_ORDER: Severity[] = [
   "info",
 ]
 
+const SAMPLE_REPOSITORIES = [
+  { label: "Next.js", owner: "vercel", name: "next.js" },
+  { label: "React", owner: "facebook", name: "react" },
+  { label: "Tailwind CSS", owner: "tailwindlabs", name: "tailwindcss" },
+]
+
 function formatNumber(value: unknown): string {
   if (typeof value !== "number" || !Number.isFinite(value)) {
     return "—"
@@ -246,9 +252,27 @@ function ScoreRing({
   )
 }
 
-function CategoryCard({ item }: { item: CategoryScore }) {
+function CategoryCard({
+  item,
+  active,
+  onSelect,
+}: {
+  item: CategoryScore
+  active: boolean
+  onSelect: () => void
+}) {
   return (
-    <div className="rounded-xl border bg-card p-5">
+    <button
+      type="button"
+      onClick={onSelect}
+      aria-pressed={active}
+      aria-label={`Filter findings by ${item.category}`}
+      className={`group w-full rounded-xl border p-5 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+        active
+          ? "border-orange-400/70 bg-orange-400/[0.08] shadow-[0_0_0_1px_rgba(251,146,60,0.12)]"
+          : "border-border bg-card hover:border-orange-400/40 hover:bg-card/90"
+      }`}
+    >
       <div className="flex items-start justify-between gap-3">
         <div>
           <h3 className="font-medium">{item.category}</h3>
@@ -276,11 +300,14 @@ function CategoryCard({ item }: { item: CategoryScore }) {
 
       <div className="mt-3 flex justify-between gap-3 text-xs text-muted-foreground">
         <span>{item.weight}% weight</span>
-        <span>
-          {item.weightedContribution.toFixed(1)} points contributed
-        </span>
+        <span>{item.weightedContribution.toFixed(1)} points contributed</span>
       </div>
-    </div>
+
+      <div className="mt-4 flex items-center justify-between border-t border-border/70 pt-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+        <span>{active ? "Filter active" : "Inspect findings"}</span>
+        <span aria-hidden="true" className="text-orange-400 transition-transform group-hover:translate-x-1">↗</span>
+      </div>
+    </button>
   )
 }
 
@@ -366,6 +393,7 @@ export default function Home() {
   const [report, setReport] = useState<RepositoryReport | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [activeTab, setActiveTab] = useState("all")
+  const [activeCategory, setActiveCategory] = useState<string | null>(null)
 
   async function handleAnalyze() {
     const parsed = parseRepositoryUrl(repositoryUrl)
@@ -443,17 +471,18 @@ export default function Home() {
 
   const allFindings = report ? getAllFindings(report.analysis) : []
 
-  const filteredFindings =
-    activeTab === "all"
-      ? allFindings
-      : allFindings.filter(
-          (finding) => finding.severity === activeTab
-        )
+  const filteredFindings = allFindings.filter(
+    (finding) =>
+      (activeTab === "all" || finding.severity === activeTab) &&
+      (!activeCategory || finding.category === activeCategory)
+  )
 
   const counts = SEVERITY_ORDER.reduce(
     (result, severity) => {
       result[severity] = allFindings.filter(
-        (finding) => finding.severity === severity
+        (finding) =>
+          finding.severity === severity &&
+          (!activeCategory || finding.category === activeCategory)
       ).length
       return result
     },
@@ -491,7 +520,7 @@ export default function Home() {
       </header>
 
       <section className="relative overflow-hidden border-b">
-        <div className="pointer-events-none absolute inset-0 opacity-40">
+        <div className="pointer-events-none absolute inset-0 opacity-40 raster-grid">
           <div className="absolute -right-32 -top-40 h-96 w-96 rounded-full bg-foreground/[0.04] blur-3xl" />
           <div className="absolute -bottom-52 left-1/4 h-96 w-96 rounded-full bg-foreground/[0.03] blur-3xl" />
         </div>
@@ -499,7 +528,7 @@ export default function Home() {
         <div className="relative mx-auto max-w-7xl px-6 py-20 sm:py-28">
           <div className="max-w-4xl">
             <div className="mb-6 flex items-center gap-3">
-              <span className="h-px w-8 bg-foreground" />
+              <span className="h-px w-8 bg-orange-400" />
               <span className="text-xs font-semibold tracking-[0.22em] text-muted-foreground">
                 GITHUB REPOSITORY HEALTH ANALYZER
               </span>
@@ -507,7 +536,7 @@ export default function Home() {
 
             <h1 className="max-w-4xl text-balance text-5xl font-semibold leading-[1.06] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
               Understand your codebase.
-              <span className="mt-2 block font-normal italic text-muted-foreground">
+              <span className="mt-2 block font-normal text-orange-300">
                 Improve what matters.
               </span>
             </h1>
@@ -546,7 +575,7 @@ export default function Home() {
                   type="button"
                   onClick={() => void handleAnalyze()}
                   disabled={isLoading}
-                  className="flex h-14 items-center justify-center gap-3 rounded-lg bg-foreground px-6 text-sm font-semibold text-background transition-opacity hover:opacity-85 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="flex h-14 items-center justify-center gap-3 rounded-lg border border-orange-300/30 bg-orange-400 px-6 text-sm font-bold text-[#111315] shadow-[0_0_24px_rgba(251,146,60,0.12)] transition-all hover:bg-orange-300 hover:shadow-[0_0_30px_rgba(251,146,60,0.2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-300 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {isLoading ? (
                     <>
@@ -560,6 +589,25 @@ export default function Home() {
                     </>
                   )}
                 </button>
+              </div>
+
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                <span className="mr-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                  Quick start
+                </span>
+                {SAMPLE_REPOSITORIES.map((sample) => (
+                  <button
+                    key={sample.owner + "/" + sample.name}
+                    type="button"
+                    onClick={() => {
+                      setRepositoryUrl(`https://github.com/${sample.owner}/${sample.name}`)
+                      setError("")
+                    }}
+                    className="rounded-md border border-border bg-card/70 px-3 py-2 text-xs text-muted-foreground transition-colors hover:border-orange-400/50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+                  >
+                    {sample.label} <span aria-hidden="true" className="ml-1 text-orange-400">↗</span>
+                  </button>
+                ))}
               </div>
 
               {error && (
@@ -607,7 +655,7 @@ export default function Home() {
               ["100%", "Transparent category weights"],
             ].map(([value, label]) => (
               <div key={label}>
-                <div className="text-2xl font-semibold tracking-tight">
+                <div className="text-2xl font-semibold tracking-tight text-orange-300">
                   {value}
                 </div>
                 <p className="mt-1 text-sm text-muted-foreground">
@@ -777,17 +825,44 @@ export default function Home() {
 
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {weightedResults.map((item) => (
-                  <CategoryCard key={item.category} item={item} />
+                  <CategoryCard
+                    key={item.category}
+                    item={item}
+                    active={activeCategory === item.category}
+                    onSelect={() => {
+                      setActiveCategory(
+                        activeCategory === item.category ? null : item.category
+                      )
+                      document
+                        .getElementById("findings")
+                        ?.scrollIntoView({ behavior: "smooth", block: "start" })
+                    }}
+                  />
                 ))}
               </div>
             </div>
 
-            <div className="mt-14">
+            <div id="findings" className="mt-14 scroll-mt-6">
               <SectionHeading
                 eyebrow="FINDINGS"
                 title="What needs attention?"
                 description="Findings are generated by the static analyzers. Informational findings provide context and do not necessarily indicate a defect."
               />
+
+              {activeCategory && (
+                <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-orange-400/30 bg-orange-400/[0.06] px-4 py-3">
+                  <p className="text-sm">
+                    Showing <span className="font-semibold text-orange-300">{activeCategory}</span> findings
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setActiveCategory(null)}
+                    className="text-xs font-semibold uppercase tracking-wider text-orange-300 underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+                  >
+                    Clear category
+                  </button>
+                </div>
+              )}
 
               <div className="mb-5 flex flex-wrap gap-2">
                 <button
