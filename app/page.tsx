@@ -5,6 +5,7 @@ import { useState } from "react"
 import Link from "next/link"
 
 import { parseRepositoryUrl } from "@/lib/github/parse-repository-url"
+import { filterFindings } from "@/lib/analyzers/findings-filter"
 
 type Severity = "critical" | "high" | "medium" | "low" | "info"
 
@@ -471,10 +472,10 @@ export default function Home() {
 
   const allFindings = report ? getAllFindings(report.analysis) : []
 
-  const filteredFindings = allFindings.filter(
-    (finding) =>
-      (activeTab === "all" || finding.severity === activeTab) &&
-      (!activeCategory || finding.category === activeCategory)
+  const filteredFindings = filterFindings(
+    allFindings,
+    activeTab,
+    activeCategory
   )
 
   const counts = SEVERITY_ORDER.reduce(
