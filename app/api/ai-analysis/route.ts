@@ -20,12 +20,14 @@ function priority(value: unknown): Priority {
 export async function POST(request: Request) {
   try {
     const body: unknown = await request.json()
-    if (!isRecord(body) || !isRecord(body.report) ||
-        !isRecord(body.report.repository) || !isRecord(body.report.analysis)) {
+    if (!isRecord(body) || !isRecord(body.report)) {
       return NextResponse.json({ error: "A valid repository analysis report is required." }, { status: 400 })
     }
 
     const report = body.report
+    if (!isRecord(report.repository) || !isRecord(report.analysis)) {
+      return NextResponse.json({ error: "A valid repository analysis report is required." }, { status: 400 })
+    }
     const repository = report.repository
     const analysis = report.analysis
     const score = isRecord(report.score) ? report.score : {}
