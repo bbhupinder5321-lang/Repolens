@@ -417,6 +417,14 @@ export default function Home() {
   }
 
   async function handleAnalyze() {
+    setActiveTab("all")
+    setActiveCategory(null)
+    setActionMessage("")
+    setAiResult(null)
+    setAiError("")
+    setTodoItems([])
+    setAiFeedback(null)
+    setAiFeedbackMessage("")
     const parsed = parseRepositoryUrl(repositoryUrl)
 
     if (!parsed) {
