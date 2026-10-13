@@ -79,6 +79,11 @@ type RepositoryReport = {
   score: RepositoryScore
 }
 
+type AiPriority = "high" | "medium" | "low"
+type AiInsight = { title: string; detail: string; priority: AiPriority }
+type AiTask = { id: string; title: string; description: string; priority: AiPriority; relatedFinding?: string; completed?: boolean }
+type AiResult = { provider: string; model: string; summary: string; insights: AiInsight[]; tasks: AiTask[] }
+
 const CATEGORY_DESCRIPTIONS: Record<string, string> = {
   Documentation: "Project documentation and onboarding",
   "Code Structure": "Organization and source file structure",
@@ -369,6 +374,47 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState("all")
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
   const [actionMessage, setActionMessage] = useState("")
+  const [aiResult, setAiResult] = useState<AiResult | null>(null)
+  const [isAiLoading, setIsAiLoading] = useState(false)
+  const [aiError, setAiError] = useState("")
+  const [todoItems, setTodoItems] = useState<AiTask[]>([])
+  const [aiFeedback, setAiFeedback] = useState<"helpful" | "not-helpful" | null>(null)
+  const [aiFeedbackMessage, setAiFeedbackMessage] = useState("")
+
+  async function handleAiAnalysis() {
+    if (!report || isAiLoading) return
+
+    setIsAiLoading(true)
+    setAiError("")
+    setAiFeedback(null)
+    setAiFeedbackMessage("")
+    try {
+      const response = await fetch("/api/ai-analysis", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ report }),
+      })
+      const data: unknown = await response.json()
+      if (!response.ok) {
+        const message = typeof data === "object" && data !== null && "error" in data && typeof data.error === "string"
+          ? data.error
+          : "Unable to generate AI insights."
+        throw new Error(message)
+      }
+      if (typeof data !== "object" || data === null || !("tasks" in data) || !Array.isArray(data.tasks) || !("insights" in data) || !Array.isArray(data.insights)) {
+        throw new Error("The local AI returned an unexpected response.")
+      }
+      const result = data as AiResult
+      setAiResult(result)
+      setTodoItems(result.tasks.map((task) => ({ ...task, completed: false })))
+    } catch (caughtError) {
+      setAiError(caughtError instanceof Error ? caughtError.message : "Unable to generate AI insights.")
+      setAiResult(null)
+      setTodoItems([])
+    } finally {
+      setIsAiLoading(false)
+    }
+  }
 
   async function handleAnalyze() {
     const parsed = parseRepositoryUrl(repositoryUrl)
@@ -381,6 +427,11 @@ export default function Home() {
 
     setError("")
     setActionMessage("")
+    setAiResult(null)
+    setAiError("")
+    setTodoItems([])
+    setAiFeedback(null)
+    setAiFeedbackMessage("")
     setActiveTab("all")
     setActiveCategory(null)
     setReport(null)
@@ -663,6 +714,11 @@ export default function Home() {
                   setActiveTab("all")
                   setActiveCategory(null)
                   setActionMessage("")
+                  setAiResult(null)
+                  setAiError("")
+                  setTodoItems([])
+                  setAiFeedback(null)
+                  setAiFeedbackMessage("")
                   setError("")
                   window.scrollTo({ top: 0, behavior: "smooth" })
                 }}
@@ -928,6 +984,103 @@ export default function Home() {
                       </ul>
                     </div>
                   ))}
+              </div>
+            </div>
+
+            <div className="mt-14" id="ai-insights">
+              <SectionHeading
+                eyebrow="LOCAL AI ASSISTANT"
+                title="Turn findings into a plan."
+                description="Ask a locally running Ollama model to explain the analysis, recommend improvements, and create a prioritized to-do list. AI output is advisory; verify it against your codebase."
+              />
+
+              <div className="rounded-xl border bg-card p-5 sm:p-6">
+                <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+                  <div>
+                    <h3 className="font-medium">AI repository review</h3>
+                    <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                      Uses the configured local model through Ollama on this machine.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => void handleAiAnalysis()}
+                    disabled={isAiLoading}
+                    className="rounded-lg bg-foreground px-4 py-2.5 text-sm font-semibold text-background hover:opacity-85 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                  >
+                    {isAiLoading ? "Generating insights…" : aiResult ? "Regenerate AI insights" : "Generate AI insights"}
+                  </button>
+                </div>
+
+                {isAiLoading && <p role="status" className="mt-4 text-sm text-muted-foreground">The local model is reviewing the report. This may take a minute.</p>}
+                {aiError && <p role="alert" className="mt-4 rounded-lg border border-amber-500/30 bg-amber-500/5 p-3 text-sm text-amber-700 dark:text-amber-300">{aiError}</p>}
+
+                {aiResult && (
+                  <div className="mt-6 space-y-8">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h3 className="font-semibold">AI summary</h3>
+                        <span className="rounded-full border px-2 py-1 text-xs text-muted-foreground">{aiResult.provider} · {aiResult.model}</span>
+                      </div>
+                      <p className="mt-3 text-sm leading-6 text-muted-foreground">{aiResult.summary || "The model did not provide a summary."}</p>
+                    </div>
+
+                    <div>
+                      <h3 className="font-semibold">Recommendations</h3>
+                      <div className="mt-3 grid gap-3 lg:grid-cols-2">
+                        {aiResult.insights.map((insight, index) => (
+                          <article key={insight.title + index} className="rounded-lg border p-4">
+                            <div className="flex flex-wrap items-center justify-between gap-2">
+                              <h4 className="font-medium">{insight.title}</h4>
+                              <span className="rounded-full border px-2 py-1 text-[10px] font-semibold uppercase tracking-wide">{insight.priority} priority</span>
+                            </div>
+                            <p className="mt-2 text-sm leading-6 text-muted-foreground">{insight.detail}</p>
+                          </article>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <div>
+                          <h3 className="font-semibold">Prioritized to-do list</h3>
+                          <p className="mt-1 text-xs text-muted-foreground">Saved for this analysis session only.</p>
+                        </div>
+                        <span className="text-xs text-muted-foreground">{todoItems.filter((task) => task.completed).length} of {todoItems.length} completed</span>
+                      </div>
+                      <ul className="mt-3 space-y-3">
+                        {todoItems.map((task) => (
+                          <li key={task.id} className="flex gap-3 rounded-lg border p-4">
+                            <input
+                              type="checkbox"
+                              checked={Boolean(task.completed)}
+                              onChange={(event) => setTodoItems((current) => current.map((item) => item.id === task.id ? { ...item, completed: event.target.checked } : item))}
+                              aria-label={"Mark task complete: " + task.title}
+                              className="mt-1 h-4 w-4 shrink-0 accent-current"
+                            />
+                            <div className="min-w-0 flex-1">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <p className={task.completed ? "font-medium line-through opacity-60" : "font-medium"}>{task.title}</p>
+                                <span className="rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-wide">{task.priority}</span>
+                              </div>
+                              <p className="mt-1 text-sm leading-6 text-muted-foreground">{task.description}</p>
+                              {task.relatedFinding && <p className="mt-2 text-xs text-muted-foreground">Related finding: {task.relatedFinding}</p>}
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="border-t pt-5">
+                      <p className="text-sm font-medium">Was this AI review useful?</p>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        <button type="button" aria-pressed={aiFeedback === "helpful"} onClick={() => { setAiFeedback("helpful"); setAiFeedbackMessage("Thanks — marked this AI review as helpful for this session.") }} className={"rounded-lg border px-3 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring " + (aiFeedback === "helpful" ? "border-foreground bg-muted" : "hover:bg-muted")}>Helpful</button>
+                        <button type="button" aria-pressed={aiFeedback === "not-helpful"} onClick={() => { setAiFeedback("not-helpful"); setAiFeedbackMessage("Thanks — marked this AI review as not helpful for this session.") }} className={"rounded-lg border px-3 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring " + (aiFeedback === "not-helpful" ? "border-foreground bg-muted" : "hover:bg-muted")}>Not helpful</button>
+                      </div>
+                      {aiFeedbackMessage && <p role="status" className="mt-2 text-xs text-muted-foreground">{aiFeedbackMessage}</p>}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
