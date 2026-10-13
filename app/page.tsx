@@ -5,6 +5,7 @@ import { useState } from "react"
 import Link from "next/link"
 
 import { parseRepositoryUrl } from "@/lib/github/parse-repository-url"
+import { filterFindings } from "@/lib/analyzers/findings-filter"
 
 type Severity = "critical" | "high" | "medium" | "low" | "info"
 
@@ -246,9 +247,9 @@ function ScoreRing({
   )
 }
 
-function CategoryCard({ item }: { item: CategoryScore }) {
+function CategoryCard({ item, active, onClick }: { item: CategoryScore; active: boolean; onClick: () => void }) {
   return (
-    <div className="rounded-xl border bg-card p-5">
+    <button type="button" onClick={onClick} aria-pressed={active} aria-label={`Filter findings for ${item.category}`} className={`w-full rounded-xl border bg-card p-5 text-left transition-colors hover:bg-muted/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${active ? "border-foreground ring-1 ring-foreground/20" : ""}`}>
       <div className="flex items-start justify-between gap-3">
         <div>
           <h3 className="font-medium">{item.category}</h3>
@@ -366,6 +367,8 @@ export default function Home() {
   const [report, setReport] = useState<RepositoryReport | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [activeTab, setActiveTab] = useState("all")
+  const [activeCategory, setActiveCategory] = useState<string | null>(null)
+  const [actionMessage, setActionMessage] = useState("")
 
   async function handleAnalyze() {
     const parsed = parseRepositoryUrl(repositoryUrl)
@@ -377,6 +380,9 @@ export default function Home() {
     }
 
     setError("")
+    setActionMessage("")
+    setActiveTab("all")
+    setActiveCategory(null)
     setReport(null)
     setIsLoading(true)
 
@@ -443,12 +449,10 @@ export default function Home() {
 
   const allFindings = report ? getAllFindings(report.analysis) : []
 
-  const filteredFindings =
-    activeTab === "all"
-      ? allFindings
-      : allFindings.filter(
-          (finding) => finding.severity === activeTab
-        )
+  const filteredFindings = filterFindings(allFindings, {
+    category: activeCategory,
+    severity: activeTab === "all" ? null : activeTab as Severity,
+  })
 
   const counts = SEVERITY_ORDER.reduce(
     (result, severity) => {
@@ -657,6 +661,9 @@ export default function Home() {
                 onClick={() => {
                   setReport(null)
                   setActiveTab("all")
+                  setActiveCategory(null)
+                  setActionMessage("")
+                  setError("")
                   window.scrollTo({ top: 0, behavior: "smooth" })
                 }}
                 className="self-start rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors hover:bg-muted sm:self-auto"
@@ -665,7 +672,7 @@ export default function Home() {
               </button>
             </div>
 
-            <div className="grid gap-5 lg:grid-cols-[0.85fr_1.15fr]">
+            <div className="mb-6 flex flex-wrap gap-2">\n              <button type="button" onClick={async () => {\n                const summary = [\n                  `RepoLens report: ${report.repository.owner}/${report.repository.name}`,\n                  `Overall score: ${report.score.score === null ? "Unavailable" : `${report.score.score}/100 (${report.score.rating})`}`,\n                  `Score coverage: ${report.score.coveragePercent}%`,\n                  `Total findings: ${allFindings.length}`,\n                  ...SEVERITY_ORDER.map((severity) => `${severity}: ${counts[severity]}`),\n                  "",\n                  "Category scores:",\n                  ...weightedResults.map((item) => `- ${item.category}: ${item.score}/100 (${item.weight}% weight)`),\n                  "",\n                  "Top findings:",\n                  ...allFindings.slice(0, 10).map((finding) => `- [${finding.severity.toUpperCase()}] ${finding.category}: ${finding.title}${finding.file ? ` (${finding.file}${finding.line ? `:${finding.line}` : ""})` : ""}`),\n                ].join("\\n")\n                try {\n                  if (!navigator.clipboard?.writeText) throw new Error("Clipboard API unavailable")\n                  await navigator.clipboard.writeText(summary)\n                  setActionMessage("Report summary copied to clipboard.")\n                } catch {\n                  setActionMessage("Could not copy automatically. Check browser clipboard permissions and try again.")\n                }\n              }} className="rounded-lg border px-4 py-2.5 text-sm font-medium hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">Copy report summary</button>\n            </div>\n\n            <div className="grid gap-5 lg:grid-cols-[0.85fr_1.15fr]">
               <div className="flex flex-col items-center justify-center rounded-2xl border bg-card p-8 sm:p-10">
                 {report.score.score !== null &&
                 report.score.rating !== null ? (
@@ -777,19 +784,28 @@ export default function Home() {
 
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {weightedResults.map((item) => (
-                  <CategoryCard key={item.category} item={item} />
+                  <CategoryCard
+                    key={item.category}
+                    item={item}
+                    active={activeCategory === item.category}
+                    onClick={() => {
+                      setActiveCategory((current) => current === item.category ? null : item.category)
+                      document.getElementById("findings-list")?.scrollIntoView({ behavior: "smooth", block: "start" })
+                    }}
+                  />
                 ))}
               </div>
             </div>
 
             <div className="mt-14">
+              <div id="findings-list" className="scroll-mt-6" />
               <SectionHeading
                 eyebrow="FINDINGS"
                 title="What needs attention?"
                 description="Findings are generated by the static analyzers. Informational findings provide context and do not necessarily indicate a defect."
               />
 
-              <div className="mb-5 flex flex-wrap gap-2">
+              <div className="mb-5 flex flex-wrap items-center gap-2">\n                {activeCategory && (\n                  <button type="button" onClick={() => setActiveCategory(null)} className="rounded-full border border-foreground px-3 py-2 text-xs font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">\n                    Clear category: {activeCategory} ×\n                  </button>\n                )}
                 <button
                   type="button"
                   onClick={() => setActiveTab("all")}
@@ -820,7 +836,7 @@ export default function Home() {
                 ))}
               </div>
 
-              {filteredFindings.length === 0 ? (
+              {actionMessage && <p role="status" aria-live="polite" className="mb-4 text-sm text-muted-foreground">{actionMessage}</p>}\n              {filteredFindings.length === 0 ? (
                 <div className="rounded-xl border bg-card px-6 py-12 text-center">
                   <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full border text-lg">
                     ✓
