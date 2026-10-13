@@ -281,7 +281,7 @@ function CategoryCard({ item, active, onClick }: { item: CategoryScore; active: 
           {item.weightedContribution.toFixed(1)} points contributed
         </span>
       </div>
-    </div>
+    </button>
   )
 }
 
@@ -672,7 +672,37 @@ export default function Home() {
               </button>
             </div>
 
-            <div className="mb-6 flex flex-wrap gap-2">\n              <button type="button" onClick={async () => {\n                const summary = [\n                  `RepoLens report: ${report.repository.owner}/${report.repository.name}`,\n                  `Overall score: ${report.score.score === null ? "Unavailable" : `${report.score.score}/100 (${report.score.rating})`}`,\n                  `Score coverage: ${report.score.coveragePercent}%`,\n                  `Total findings: ${allFindings.length}`,\n                  ...SEVERITY_ORDER.map((severity) => `${severity}: ${counts[severity]}`),\n                  "",\n                  "Category scores:",\n                  ...weightedResults.map((item) => `- ${item.category}: ${item.score}/100 (${item.weight}% weight)`),\n                  "",\n                  "Top findings:",\n                  ...allFindings.slice(0, 10).map((finding) => `- [${finding.severity.toUpperCase()}] ${finding.category}: ${finding.title}${finding.file ? ` (${finding.file}${finding.line ? `:${finding.line}` : ""})` : ""}`),\n                ].join("\\n")\n                try {\n                  if (!navigator.clipboard?.writeText) throw new Error("Clipboard API unavailable")\n                  await navigator.clipboard.writeText(summary)\n                  setActionMessage("Report summary copied to clipboard.")\n                } catch {\n                  setActionMessage("Could not copy automatically. Check browser clipboard permissions and try again.")\n                }\n              }} className="rounded-lg border px-4 py-2.5 text-sm font-medium hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">Copy report summary</button>\n            </div>\n\n            <div className="grid gap-5 lg:grid-cols-[0.85fr_1.15fr]">
+            <div className="mb-6 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={async () => {
+                  const summary = [
+                    "RepoLens report: " + report.repository.owner + "/" + report.repository.name,
+                    "Overall score: " + (report.score.score === null ? "Unavailable" : report.score.score + "/100 (" + report.score.rating + ")"),
+                    "Score coverage: " + report.score.coveragePercent + "%",
+                    "Total findings: " + allFindings.length,
+                    ...SEVERITY_ORDER.map((severity) => severity + ": " + counts[severity]),
+                    "",
+                    "Category scores:",
+                    ...weightedResults.map((item) => "- " + item.category + ": " + item.score + "/100 (" + item.weight + "% weight)"),
+                    "",
+                    "Top findings:",
+                    ...allFindings.slice(0, 10).map((finding) => "- [" + finding.severity.toUpperCase() + "] " + finding.category + ": " + finding.title + (finding.file ? " (" + finding.file + (finding.line ? ":" + finding.line : "") + ")" : "")),
+                  ].join("\\n")
+                  try {
+                    if (!navigator.clipboard?.writeText) throw new Error("Clipboard API unavailable")
+                    await navigator.clipboard.writeText(summary)
+                    setActionMessage("Report summary copied to clipboard.")
+                  } catch {
+                    setActionMessage("Could not copy automatically. Check browser clipboard permissions and try again.")
+                  }
+                }}
+                className="rounded-lg border px-4 py-2.5 text-sm font-medium hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+              >
+                Copy report summary
+              </button>
+            </div>
+            <div className="grid gap-5 lg:grid-cols-[0.85fr_1.15fr]">
               <div className="flex flex-col items-center justify-center rounded-2xl border bg-card p-8 sm:p-10">
                 {report.score.score !== null &&
                 report.score.rating !== null ? (
