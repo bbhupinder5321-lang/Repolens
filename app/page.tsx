@@ -744,7 +744,7 @@ export default function Home() {
                     "",
                     "Top findings:",
                     ...allFindings.slice(0, 10).map((finding) => "- [" + finding.severity.toUpperCase() + "] " + finding.category + ": " + finding.title + (finding.file ? " (" + finding.file + (finding.line ? ":" + finding.line : "") + ")" : "")),
-                  ].join("\\n")
+                  ].join("\n")
                   try {
                     if (!navigator.clipboard?.writeText) throw new Error("Clipboard API unavailable")
                     await navigator.clipboard.writeText(summary)
