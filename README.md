@@ -34,3 +34,36 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+## Tests
+
+Run the test suite with:
+
+```bash
+npm test
+```
+
+Run linting and a production build before opening a pull request:
+
+```bash
+npm run lint
+npm run build
+```
+
+## Optional local AI insights (Ollama)
+
+RepoLens's deterministic analyzers and score calculation work without AI. To generate AI summaries, recommendations, and a prioritized session-only to-do list, install [Ollama](https://ollama.com), start its local service, and pull a model:
+
+```bash
+ollama pull llama3.2
+```
+
+By default, the AI endpoint connects to `http://127.0.0.1:11434` and uses the `llama3.2` model. You can override these server-side settings in your local `.env.local` file:
+
+```dotenv
+OLLAMA_BASE_URL=http://127.0.0.1:11434
+OLLAMA_MODEL=llama3.2
+```
+
+Restart `npm run dev` after changing environment variables. If Ollama is not running or the model is missing, RepoLens shows an actionable error; the existing static analysis remains available. AI advice is advisory and should be checked against the repository. AI feedback and checked to-do items currently remain in the browser session and are not stored on a server.
