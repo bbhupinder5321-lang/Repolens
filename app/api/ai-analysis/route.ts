@@ -4,6 +4,7 @@ export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
 
 type Priority = "high" | "medium" | "low"
+const PRIORITY_RANK: Record<Priority, number> = { high: 0, medium: 1, low: 2 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null
@@ -121,7 +122,7 @@ export async function POST(request: Request) {
       title: cleanText(item.title, 180),
       detail: cleanText(item.detail, 1000),
       priority: priority(item.priority),
-    })).filter((item) => item.title && item.detail) : []
+    })).filter((item) => item.title && item.detail).sort((a, b) => PRIORITY_RANK[a.priority] - PRIORITY_RANK[b.priority]) : []
 
     const tasks = Array.isArray(parsed.tasks) ? parsed.tasks.filter(isRecord).slice(0, 8).map((item) => ({
       id: crypto.randomUUID(),
@@ -129,7 +130,7 @@ export async function POST(request: Request) {
       description: cleanText(item.description, 800),
       priority: priority(item.priority),
       relatedFinding: cleanText(item.relatedFinding, 240),
-    })).filter((item) => item.title && item.description) : []
+    })).filter((item) => item.title && item.description).sort((a, b) => PRIORITY_RANK[a.priority] - PRIORITY_RANK[b.priority]) : []
 
     return NextResponse.json({
       provider: "ollama",
