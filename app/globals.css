@@ -128,3 +128,1978 @@
     @apply font-sans;
   }
 }
+
+@layer base {
+  :where(a, button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"])):focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* RepoLens Phase 1 — light design foundation */
+:root {
+  color-scheme: light;
+
+  --background: oklch(0.985 0.004 255);
+  --foreground: oklch(0.205 0.025 260);
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.205 0.025 260);
+
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.205 0.025 260);
+
+  /* Signature electric-cobalt accent */
+  --primary: oklch(0.52 0.23 264);
+  --primary-foreground: oklch(0.99 0 0);
+
+  --secondary: oklch(0.955 0.012 255);
+  --secondary-foreground: oklch(0.28 0.035 260);
+
+  --muted: oklch(0.96 0.008 255);
+  --muted-foreground: oklch(0.52 0.025 260);
+
+  --accent: oklch(0.94 0.035 264);
+  --accent-foreground: oklch(0.36 0.16 264);
+
+  --border: oklch(0.90 0.014 255);
+  --input: oklch(0.90 0.014 255);
+  --ring: oklch(0.58 0.22 264);
+
+  --chart-1: oklch(0.52 0.23 264);
+  --chart-2: oklch(0.62 0.16 225);
+  --chart-3: oklch(0.68 0.15 165);
+  --chart-4: oklch(0.75 0.16 80);
+  --chart-5: oklch(0.62 0.20 315);
+
+  --sidebar: oklch(0.975 0.006 255);
+  --sidebar-foreground: oklch(0.25 0.025 260);
+  --sidebar-primary: oklch(0.52 0.23 264);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.94 0.035 264);
+  --sidebar-accent-foreground: oklch(0.36 0.16 264);
+  --sidebar-border: oklch(0.91 0.012 255);
+  --sidebar-ring: oklch(0.58 0.22 264);
+
+  --rl-canvas: oklch(0.985 0.004 255);
+  --rl-surface: oklch(1 0 0);
+  --rl-surface-muted: oklch(0.965 0.008 255);
+  --rl-accent: oklch(0.52 0.23 264);
+  --rl-accent-soft: oklch(0.94 0.035 264);
+  --rl-text: oklch(0.205 0.025 260);
+  --rl-text-muted: oklch(0.52 0.025 260);
+  --rl-border: oklch(0.90 0.014 255);
+  --rl-radius-panel: 1rem;
+  --rl-radius-control: 0.65rem;
+  --rl-shadow-panel: 0 8px 30px oklch(0.25 0.04 260 / 0.045);
+}
+
+
+/* RepoLens Phase 1 — scoped report dashboard refresh */
+.forge-app .report-section {
+  background: var(--rl-canvas);
+  border-bottom-color: var(--rl-border);
+  color: var(--rl-text);
+}
+
+.forge-app .report-section .rl-dashboard {
+  width: min(100% - 64px, 1280px);
+  padding-block: 48px 88px;
+  color: var(--rl-text);
+}
+
+.forge-app .report-section .rl-dashboard .report-top {
+  align-items: center;
+  margin-bottom: 34px;
+}
+
+.forge-app .report-section .rl-dashboard .report-complete {
+  border: 1px solid oklch(0.78 0.12 155 / 45%);
+  border-radius: 999px;
+  background: oklch(0.95 0.045 155);
+  padding: 7px 11px;
+  color: oklch(0.40 0.12 155);
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+}
+
+.forge-app .report-section .rl-dashboard .report-title {
+  margin-top: 16px;
+  color: var(--rl-text);
+  font-size: clamp(28px, 3.4vw, 42px);
+  font-weight: 750;
+  letter-spacing: -0.055em;
+  line-height: 1.12;
+}
+
+.forge-app .report-section .rl-dashboard .report-description {
+  color: var(--rl-text-muted);
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+.forge-app .report-section .rl-dashboard .outline-button {
+  min-height: 40px;
+  border: 1px solid var(--rl-border);
+  border-radius: var(--rl-radius-control);
+  background: var(--rl-surface);
+  color: var(--rl-text) !important;
+  font-family: inherit;
+  font-size: 12px !important;
+  font-weight: 600;
+  box-shadow: 0 1px 2px oklch(0.25 0.04 260 / 0.035);
+}
+
+.forge-app .report-section .rl-dashboard .outline-button:hover {
+  border-color: var(--rl-accent);
+  background: var(--rl-accent-soft);
+  color: var(--rl-accent) !important;
+}
+
+.forge-app .report-section .rl-dashboard .overview-grid {
+  grid-template-columns: minmax(290px, 0.82fr) minmax(0, 1.18fr);
+  gap: 20px;
+}
+
+.forge-app .report-section .rl-dashboard .forge-panel {
+  border: 1px solid var(--rl-border);
+  border-radius: var(--rl-radius-panel);
+  background: var(--rl-surface);
+  box-shadow: var(--rl-shadow-panel);
+}
+
+.forge-app .report-section .rl-dashboard .panel-kicker {
+  color: var(--rl-accent);
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.11em;
+}
+
+.forge-app .report-section .rl-dashboard .panel-title {
+  color: var(--rl-text);
+  font-size: 21px;
+  font-weight: 750;
+  letter-spacing: -0.045em;
+}
+
+.forge-app .report-section .rl-dashboard .panel-subtitle {
+  color: var(--rl-text-muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.forge-app .report-section .rl-dashboard .score-panel {
+  min-height: 420px;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: clamp(22px, 3vw, 32px);
+}
+
+.forge-app .report-section .rl-dashboard .score-panel::before {
+  background: oklch(0.52 0.23 264 / 7%);
+}
+
+.forge-app .report-section .rl-dashboard .score-panel > .panel-kicker,
+.forge-app .report-section .rl-dashboard .score-panel > .panel-title,
+.forge-app .report-section .rl-dashboard .score-panel > .panel-subtitle {
+  text-align: left;
+}
+
+.forge-app .report-section .rl-dashboard .score-summary {
+  border-top-color: var(--rl-border);
+}
+
+.forge-app .report-section .rl-dashboard .score-summary-label {
+  color: var(--rl-text-muted);
+}
+
+.forge-app .report-section .rl-dashboard .score-summary-value {
+  color: var(--rl-text);
+}
+
+.forge-app .report-section .rl-dashboard .coverage-warning {
+  color: oklch(0.48 0.13 55);
+}
+
+.forge-app .report-section .rl-dashboard .profile-header {
+  align-items: flex-start;
+}
+
+.forge-app .report-section .rl-dashboard .profile-grid {
+  gap: 25px 18px;
+}
+
+.forge-app .report-section .rl-dashboard .profile-stat {
+  min-width: 0;
+}
+
+.forge-app .report-section .rl-dashboard .profile-stat dt {
+  color: var(--rl-text-muted);
+  font-size: 11px;
+}
+
+.forge-app .report-section .rl-dashboard .profile-stat dt svg {
+  color: var(--rl-accent);
+}
+
+.forge-app .report-section .rl-dashboard .profile-stat dd {
+  color: var(--rl-text);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.forge-app .report-section .rl-dashboard .language-pill {
+  border: 1px solid oklch(0.78 0.10 264 / 45%);
+  border-radius: 999px;
+  background: var(--rl-accent-soft);
+  color: var(--rl-accent);
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.forge-app .report-section .rl-dashboard .category-section,
+.forge-app .report-section .rl-dashboard .findings-section,
+.forge-app .report-section .rl-dashboard .recommendations-section,
+.forge-app .report-section .rl-dashboard .details-section {
+  margin-top: 58px;
+}
+
+.forge-app .report-section .rl-dashboard .section-index {
+  border: 1px solid oklch(0.78 0.10 264 / 45%);
+  border-radius: 10px;
+  background: var(--rl-accent-soft);
+  color: var(--rl-accent);
+}
+
+.forge-app .report-section .rl-dashboard .section-title {
+  color: var(--rl-text);
+  font-weight: 760;
+  letter-spacing: -0.05em;
+}
+
+.forge-app .report-section .rl-dashboard .section-description {
+  color: var(--rl-text-muted);
+  font-size: 13px;
+}
+
+.forge-app .report-section .rl-dashboard .category-grid {
+  gap: 16px;
+}
+
+.forge-app .report-section .rl-dashboard .category-card,
+.forge-app .report-section .rl-dashboard .finding-card,
+.forge-app .report-section .rl-dashboard .recommendation-card {
+  border-color: var(--rl-border);
+  border-radius: 14px;
+  background: var(--rl-surface);
+  box-shadow: 0 2px 8px oklch(0.25 0.04 260 / 0.025);
+}
+
+.forge-app .report-section .rl-dashboard .findings-toolbar {
+  border-color: var(--rl-border);
+}
+
+.forge-app .report-section .rl-dashboard .filter-button {
+  border-radius: 999px;
+}
+
+.forge-app .report-section .rl-dashboard :is(input, select, textarea) {
+  border-color: var(--rl-border);
+  border-radius: var(--rl-radius-control);
+}
+
+.forge-app .report-section .rl-dashboard :is(button, a, input, select, textarea):focus-visible {
+  outline: 3px solid oklch(0.58 0.22 264 / 45%);
+  outline-offset: 3px;
+}
+
+@media (max-width: 900px) {
+  .forge-app .report-section .rl-dashboard {
+    width: calc(100% - 40px);
+  }
+
+  .forge-app .report-section .rl-dashboard .overview-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .forge-app .report-section .rl-dashboard .score-panel {
+    min-height: 380px;
+  }
+}
+
+@media (max-width: 700px) {
+  .forge-app .report-section .rl-dashboard {
+    width: calc(100% - 32px);
+    padding-block: 34px 56px;
+  }
+
+  .forge-app .report-section .rl-dashboard .report-top {
+    gap: 18px;
+  }
+
+  .forge-app .report-section .rl-dashboard .report-actions {
+    gap: 8px;
+  }
+
+  .forge-app .report-section .rl-dashboard .category-section,
+  .forge-app .report-section .rl-dashboard .findings-section,
+  .forge-app .report-section .rl-dashboard .recommendations-section,
+  .forge-app .report-section .rl-dashboard .details-section {
+    margin-top: 44px;
+  }
+}
+
+/* RepoLens Phase 2 — consistent light report surfaces */
+.forge-app .report-section .rl-dashboard .category-card,
+.forge-app .report-section .rl-dashboard .finding-card,
+.forge-app .report-section .rl-dashboard .recommendation-card {
+  background: var(--rl-surface) !important;
+  border: 1px solid var(--rl-border) !important;
+  color: var(--rl-text) !important;
+  box-shadow: 0 3px 12px rgba(24, 39, 75, 0.045) !important;
+}
+
+.forge-app .report-section .rl-dashboard .category-card h3,
+.forge-app .report-section .rl-dashboard .finding-card h3,
+.forge-app .report-section .rl-dashboard .recommendation-card h3,
+.forge-app .report-section .rl-dashboard .category-card p,
+.forge-app .report-section .rl-dashboard .finding-card p,
+.forge-app .report-section .rl-dashboard .recommendation-card p {
+  color: var(--rl-text);
+}
+
+.forge-app .report-section .rl-dashboard .category-card svg,
+.forge-app .report-section .rl-dashboard .recommendation-icon {
+  color: var(--rl-accent);
+}
+
+.forge-app .report-section .rl-dashboard .category-card:hover,
+.forge-app .report-section .rl-dashboard .finding-card:hover,
+.forge-app .report-section .rl-dashboard .recommendation-card:hover {
+  border-color: var(--rl-accent) !important;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.08) !important;
+}
+
+.forge-app .report-section .rl-dashboard .ai-panel {
+  border: 1px solid var(--rl-border) !important;
+  border-radius: var(--rl-radius-panel);
+  background: var(--rl-surface) !important;
+  color: var(--rl-text) !important;
+  box-shadow: var(--rl-shadow-panel);
+}
+
+.forge-app .report-section .rl-dashboard .ai-panel h3,
+.forge-app .report-section .rl-dashboard .ai-panel strong,
+.forge-app .report-section .rl-dashboard .ai-panel label {
+  color: var(--rl-text);
+}
+
+.forge-app .report-section .rl-dashboard .ai-panel p,
+.forge-app .report-section .rl-dashboard .ai-disclaimer {
+  color: var(--rl-text-muted);
+}
+
+.forge-app .report-section .rl-dashboard .ai-panel-header {
+  border-bottom-color: var(--rl-border);
+}
+
+.forge-app .report-section .rl-dashboard .ai-summary,
+.forge-app .report-section .rl-dashboard .ai-loading,
+.forge-app .report-section .rl-dashboard .ai-error,
+.forge-app .report-section .rl-dashboard .ai-insight-card,
+.forge-app .report-section .rl-dashboard .ai-task-list {
+  border-color: var(--rl-border);
+  background: var(--rl-surface);
+  color: var(--rl-text);
+}
+
+.forge-app .report-section .rl-dashboard .ai-kicker {
+  color: var(--rl-accent);
+}
+
+.forge-app .report-section .rl-dashboard .recommendation-list li {
+  color: var(--rl-text-muted);
+}
+
+.forge-app .report-section .rl-dashboard .profile-stat,
+.forge-app .report-section .rl-dashboard .score-summary-cell {
+  border-color: var(--rl-border);
+}
+
+@media (max-width: 700px) {
+  .forge-app .report-section .rl-dashboard .category-card,
+  .forge-app .report-section .rl-dashboard .finding-card,
+  .forge-app .report-section .rl-dashboard .recommendation-card {
+    padding: 16px;
+  }
+}
+
+/* RepoLens Phase 3 — landing, metrics, workflow and footer */
+
+/* Landing page canvas */
+.forge-app {
+  background: #f5f7fb !important;
+  color: #172033 !important;
+}
+
+.forge-app .forge-hero {
+  background: #f5f7fb !important;
+  color: #172033 !important;
+}
+
+.forge-app .forge-nav {
+  background: rgba(255, 255, 255, 0.94) !important;
+  border-bottom: 1px solid #e3e8f2 !important;
+}
+
+.forge-app .forge-nav-links a {
+  color: #475569 !important;
+}
+
+.forge-app .forge-nav-links a:hover {
+  color: #2859d6 !important;
+}
+
+.forge-app .forge-hero .eyebrow,
+.forge-app .forge-hero .hero-number-label,
+.forge-app .forge-hero .hero-footnote {
+  color: #64748b !important;
+}
+
+.forge-app .forge-hero .hero-title {
+  color: #172033 !important;
+}
+
+.forge-app .forge-hero .muted-word {
+  color: #64748b !important;
+}
+
+.forge-app .forge-hero .ember-word {
+  color: #2859d6 !important;
+}
+
+.forge-app .forge-hero .hero-description,
+.forge-app .forge-hero .hero-point {
+  color: #475569 !important;
+}
+
+.forge-app .forge-hero .hero-number {
+  color: #172033 !important;
+}
+
+.forge-app .forge-hero .terminal-card {
+  background: #ffffff !important;
+  color: #172033 !important;
+  border: 1px solid #dce4f0 !important;
+  border-radius: 20px !important;
+  box-shadow: 0 18px 55px rgba(30, 50, 90, 0.09) !important;
+}
+
+.forge-app .forge-hero .terminal-topbar {
+  background: #f8faff !important;
+  border-bottom: 1px solid #e3e8f2 !important;
+}
+
+.forge-app .forge-hero .terminal-label,
+.forge-app .forge-hero .terminal-index,
+.forge-app .forge-hero .input-label {
+  color: #64748b !important;
+}
+
+.forge-app .forge-hero .terminal-title {
+  color: #172033 !important;
+}
+
+.forge-app .forge-hero .terminal-subtitle {
+  color: #64748b !important;
+}
+
+.forge-app .forge-hero .repo-input-wrap {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+.forge-app .forge-hero .repo-input {
+  background: transparent !important;
+  color: #172033 !important;
+}
+
+.forge-app .forge-hero .repo-input::placeholder {
+  color: #94a3b8 !important;
+}
+
+.forge-app .forge-hero .repo-input-icon {
+  color: #64748b !important;
+}
+
+.forge-app .forge-hero .analyze-button {
+  background: #2859d6 !important;
+  color: #ffffff !important;
+  border: 1px solid #2859d6 !important;
+  box-shadow: 0 5px 14px rgba(40, 89, 214, 0.17) !important;
+}
+
+.forge-app .forge-hero .analyze-button:hover {
+  background: #1f49b5 !important;
+}
+
+.forge-app .forge-hero .example-chip {
+  background: #f1f5ff !important;
+  border: 1px solid #dbe5ff !important;
+  color: #2859d6 !important;
+}
+
+.forge-app .forge-hero .terminal-trust {
+  color: #64748b !important;
+}
+
+.forge-app .forge-hero .terminal-bottom {
+  background: #f8faff !important;
+  border-top: 1px solid #e3e8f2 !important;
+}
+
+.forge-app .forge-hero .terminal-bottom-value {
+  color: #2859d6 !important;
+}
+
+.forge-app .forge-hero .terminal-bottom-label {
+  color: #64748b !important;
+}
+
+.forge-app .forge-hero .scan-panel {
+  background: #f8faff !important;
+  border-color: #dce4f0 !important;
+  color: #172033 !important;
+}
+
+.forge-app .forge-hero .scan-stage,
+.forge-app .forge-hero .scan-stage-item {
+  color: #475569 !important;
+}
+
+.forge-app .forge-hero .terminal-error {
+  color: #b42318 !important;
+}
+
+/* Expanded analyzer details */
+.forge-app .report-section .rl-dashboard .detail-row {
+  background: #ffffff !important;
+  border: 1px solid #dce4f0 !important;
+  border-radius: 14px !important;
+  color: #172033 !important;
+  overflow: hidden;
+}
+
+.forge-app .report-section .rl-dashboard .detail-summary {
+  background: #ffffff !important;
+  color: #172033 !important;
+}
+
+.forge-app .report-section .rl-dashboard .detail-summary h3 {
+  color: #172033 !important;
+}
+
+.forge-app .report-section .rl-dashboard .detail-summary p,
+.forge-app .report-section .rl-dashboard .detail-count {
+  color: #64748b !important;
+}
+
+.forge-app .report-section .rl-dashboard .detail-icon {
+  background: #eef3ff !important;
+  color: #2859d6 !important;
+  border-color: #dbe5ff !important;
+}
+
+.forge-app .report-section .rl-dashboard .detail-body {
+  background: #ffffff !important;
+  border-top: 1px solid #e3e8f2 !important;
+  color: #172033 !important;
+}
+
+.forge-app .report-section .rl-dashboard .metrics-grid {
+  gap: 12px !important;
+}
+
+.forge-app .report-section .rl-dashboard .metric-cell {
+  background: #f8faff !important;
+  border: 1px solid #e3e8f2 !important;
+  border-radius: 10px !important;
+  color: #172033 !important;
+}
+
+.forge-app .report-section .rl-dashboard .metric-cell dt {
+  color: #64748b !important;
+}
+
+.forge-app .report-section .rl-dashboard .metric-cell dd {
+  color: #172033 !important;
+}
+
+.forge-app .report-section .rl-dashboard .muted-text {
+  color: #64748b !important;
+}
+
+/* Coverage panel and coverage statistics */
+.forge-app .report-section .rl-dashboard .coverage-panel {
+  background: #ffffff !important;
+  border: 1px solid #dce4f0 !important;
+  border-radius: 16px !important;
+  color: #172033 !important;
+  box-shadow: 0 3px 12px rgba(24, 39, 75, 0.04) !important;
+}
+
+.forge-app .report-section .rl-dashboard .coverage-intro h3 {
+  color: #172033 !important;
+}
+
+.forge-app .report-section .rl-dashboard .coverage-intro p {
+  color: #64748b !important;
+}
+
+.forge-app .report-section .rl-dashboard .coverage-icon {
+  background: #eef3ff !important;
+  color: #2859d6 !important;
+  border-color: #dbe5ff !important;
+}
+
+.forge-app .report-section .rl-dashboard .coverage-cell {
+  background: #f8faff !important;
+  border: 1px solid #e3e8f2 !important;
+  border-radius: 10px !important;
+}
+
+.forge-app .report-section .rl-dashboard .coverage-cell dt {
+  color: #64748b !important;
+}
+
+.forge-app .report-section .rl-dashboard .coverage-cell dd {
+  color: #172033 !important;
+}
+
+/* Workflow cards */
+.forge-app .process-section {
+  background: #f5f7fb !important;
+  color: #172033 !important;
+  border-top: 1px solid #e3e8f2 !important;
+}
+
+.forge-app .process-section .process-card {
+  background: #ffffff !important;
+  border: 1px solid #dce4f0 !important;
+  border-radius: 14px !important;
+  color: #172033 !important;
+  box-shadow: 0 3px 12px rgba(24, 39, 75, 0.04) !important;
+}
+
+.forge-app .process-section .process-card h3 {
+  color: #172033 !important;
+}
+
+.forge-app .process-section .process-card p,
+.forge-app .process-section .process-number {
+  color: #64748b !important;
+}
+
+.forge-app .process-section .process-icon {
+  background: #eef3ff !important;
+  border-color: #dbe5ff !important;
+  color: #2859d6 !important;
+}
+
+/* Footer */
+.forge-app .forge-footer {
+  background: #ffffff !important;
+  border-top: 1px solid #e3e8f2 !important;
+  color: #475569 !important;
+}
+
+.forge-app .forge-footer-brand strong {
+  color: #172033 !important;
+}
+
+.forge-app .forge-footer-brand > span:last-child,
+.forge-app .forge-footer-note {
+  color: #64748b !important;
+}
+
+.forge-app .forge-footer-mark {
+  background: #2859d6 !important;
+  border-color: #2859d6 !important;
+  color: #ffffff !important;
+}
+
+.forge-app .back-to-top {
+  background: #2859d6 !important;
+  border-color: #2859d6 !important;
+  color: #ffffff !important;
+  box-shadow: 0 5px 18px rgba(40, 89, 214, 0.2) !important;
+}
+
+@media (max-width: 700px) {
+  .forge-app .forge-hero .terminal-card {
+    border-radius: 15px !important;
+  }
+
+  .forge-app .report-section .rl-dashboard .metrics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .forge-app .report-section .rl-dashboard .coverage-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* RepoLens logo fix — preserve the selected light UI and orange brand accent */
+.forge-app .forge-nav .forge-brand,
+.forge-app .forge-nav .forge-brand:visited {
+  color: #172033 !important;
+}
+
+.forge-app .forge-nav .forge-brand-name {
+  color: #172033 !important;
+  -webkit-text-fill-color: #172033 !important;
+}
+
+.forge-app .forge-nav .forge-brand-name span {
+  color: #ff7138 !important;
+  -webkit-text-fill-color: #ff7138 !important;
+}
+
+.forge-app .forge-nav .forge-brand-sub {
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+}
+
+.forge-app .forge-nav .forge-brand-mark {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: linear-gradient(145deg, #ff8a55, #e95c25) !important;
+  border-color: #ff8a55 !important;
+}
+
+/* Navigation background fix — light header, dark readable text */
+.forge-app .forge-nav {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  color: #172033 !important;
+  border-bottom: 1px solid #e5eaf2 !important;
+  box-shadow: 0 2px 12px rgba(23, 32, 51, 0.04) !important;
+}
+
+.forge-app .forge-nav a:not(.forge-brand) {
+  color: #475569 !important;
+}
+
+.forge-app .forge-nav a:not(.forge-brand):hover {
+  color: #ea6530 !important;
+}
+
+
+/* RepoLens: full-width light header; keep navigation content centered */
+.forge-app .forge-header {
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #e5eaf2 !important;
+  box-shadow: 0 2px 12px rgba(23, 32, 51, 0.04) !important;
+}
+
+.forge-app .forge-header > .forge-shell.forge-nav {
+  width: min(1320px, calc(100% - 64px)) !important;
+  max-width: 1320px !important;
+  margin-inline: auto !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 700px) {
+  .forge-app .forge-header > .forge-shell.forge-nav {
+    width: calc(100% - 32px) !important;
+  }
+}
+
+
+/* RepoLens Overview polish � scoped to the report dashboard */
+.forge-app .report-section .rl-dashboard .overview-grid > .forge-panel {
+  min-width: 0;
+  border-radius: var(--rl-radius-panel);
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.forge-app .report-section .rl-dashboard .overview-grid > .forge-panel:hover {
+  border-color: oklch(0.84 0.035 264);
+  box-shadow: 0 10px 32px oklch(0.25 0.04 260 / 0.07);
+}
+
+.forge-app .report-section .rl-dashboard .score-panel {
+  gap: 0;
+}
+
+.forge-app .report-section .rl-dashboard .score-panel .score-summary {
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+.forge-app .report-section .rl-dashboard .score-panel .score-summary-cell {
+  min-width: 0;
+  border: 1px solid var(--rl-border);
+  border-radius: 12px;
+  background: var(--rl-surface-muted);
+  padding: 14px 16px;
+}
+
+.forge-app .report-section .rl-dashboard .score-panel .score-summary-value {
+  margin-top: 8px;
+  font-size: 22px;
+  font-weight: 750;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.forge-app .report-section .rl-dashboard .profile-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.forge-app .report-section .rl-dashboard .profile-stat {
+  min-width: 0;
+  border: 1px solid var(--rl-border);
+  border-radius: 12px;
+  background: var(--rl-surface-muted);
+  padding: 14px;
+  transition: border-color 180ms ease, background 180ms ease;
+}
+
+.forge-app .report-section .rl-dashboard .profile-stat:hover {
+  border-color: oklch(0.82 0.07 264);
+  background: var(--rl-accent-soft);
+}
+
+.forge-app .report-section .rl-dashboard .profile-stat dt {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  line-height: 1.5;
+}
+
+.forge-app .report-section .rl-dashboard .profile-stat dd {
+  overflow-wrap: anywhere;
+  margin-top: 9px;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+@media (max-width: 520px) {
+  .forge-app .report-section .rl-dashboard .profile-grid {
+    gap: 10px;
+  }
+
+  .forge-app .report-section .rl-dashboard .profile-stat {
+    padding: 11px;
+  }
+
+  .forge-app .report-section .rl-dashboard .score-panel .score-summary-cell {
+    padding: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .forge-app .report-section .rl-dashboard .overview-grid > .forge-panel,
+  .forge-app .report-section .rl-dashboard .profile-stat {
+    transition: none;
+  }
+}
+
+/* RepoLens premium Overview refinement */
+.forge-app .report-section .rl-dashboard .overview-grid > .forge-panel {
+  position: relative;
+  border-color: oklch(0.89 0.018 260);
+  border-radius: 18px;
+  background: linear-gradient(155deg, #fff 0%, #fafbff 100%);
+  box-shadow: 0 2px 5px oklch(0.25 0.04 260 / 3%), 0 14px 36px oklch(0.25 0.04 260 / 5%);
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.forge-app .report-section .rl-dashboard .overview-grid > .forge-panel:hover {
+  border-color: oklch(0.82 0.055 264);
+  box-shadow: 0 4px 10px oklch(0.25 0.04 260 / 4%), 0 20px 44px oklch(0.25 0.04 260 / 8%);
+}
+
+.forge-app .report-section .rl-dashboard .score-panel {
+  min-height: 440px;
+  background:
+    radial-gradient(ellipse at 50% 28%, oklch(0.95 0.035 264 / 75%), transparent 55%),
+    linear-gradient(155deg, #fff 0%, #fafbff 100%);
+}
+
+.forge-app .report-section .rl-dashboard .score-panel::after {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  border-radius: 18px 18px 0 0;
+  background: linear-gradient(90deg, oklch(0.63 0.20 264), oklch(0.75 0.13 300), oklch(0.70 0.15 220));
+  content: "";
+}
+
+.forge-app .report-section .rl-dashboard .score-panel > * {
+  z-index: 1;
+}
+
+.forge-app .report-section .rl-dashboard .score-panel .score-track {
+  color: oklch(0.91 0.018 260);
+}
+
+.forge-app .report-section .rl-dashboard .score-panel .score-number {
+  color: var(--rl-text);
+  font-size: 62px;
+  font-weight: 780;
+  letter-spacing: -0.085em;
+}
+
+.forge-app .report-section .rl-dashboard .score-panel .score-out-of {
+  color: var(--rl-text-muted);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+
+.forge-app .report-section .rl-dashboard .score-panel .rating-pill {
+  border-radius: 999px;
+  background: #fff;
+  padding: 9px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 3px 10px oklch(0.25 0.04 260 / 6%);
+}
+
+.forge-app .report-section .rl-dashboard .score-panel .score-summary {
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+.forge-app .report-section .rl-dashboard .score-panel .score-summary-cell {
+  border: 1px solid var(--rl-border);
+  border-radius: 13px;
+  background: oklch(0.975 0.008 260);
+  padding: 15px 16px;
+}
+
+.forge-app .report-section .rl-dashboard .score-panel .score-summary-label {
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 550;
+}
+
+.forge-app .report-section .rl-dashboard .score-panel .score-summary-label svg {
+  color: var(--rl-accent);
+}
+
+.forge-app .report-section .rl-dashboard .score-panel .score-summary-value {
+  margin-top: 9px;
+  font-size: 24px;
+  font-weight: 780;
+  letter-spacing: -0.055em;
+  font-variant-numeric: tabular-nums;
+}
+
+.forge-app .report-section .rl-dashboard .profile-header {
+  gap: 16px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--rl-border);
+}
+
+.forge-app .report-section .rl-dashboard .profile-header .panel-title {
+  font-size: 24px;
+  letter-spacing: -0.055em;
+}
+
+.forge-app .report-section .rl-dashboard .profile-grid {
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.forge-app .report-section .rl-dashboard .profile-stat {
+  border: 1px solid oklch(0.91 0.012 260);
+  border-radius: 13px;
+  background: linear-gradient(145deg, #fff, oklch(0.982 0.006 260));
+  padding: 15px;
+}
+
+.forge-app .report-section .rl-dashboard .profile-stat:hover {
+  border-color: oklch(0.82 0.055 264);
+  background: linear-gradient(145deg, #fff, oklch(0.965 0.025 264));
+}
+
+.forge-app .report-section .rl-dashboard .profile-stat dt {
+  gap: 8px;
+  color: oklch(0.49 0.025 260);
+  font-size: 11px;
+  font-weight: 550;
+}
+
+.forge-app .report-section .rl-dashboard .profile-stat dt svg {
+  flex-shrink: 0;
+  box-sizing: content-box;
+  border-radius: 7px;
+  background: var(--rl-accent-soft);
+  padding: 5px;
+  color: var(--rl-accent);
+}
+
+.forge-app .report-section .rl-dashboard .profile-stat dd {
+  overflow-wrap: anywhere;
+  margin-top: 12px;
+  color: oklch(0.22 0.03 260);
+  font-size: 16px;
+  font-weight: 750;
+  letter-spacing: -0.025em;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+}
+
+.forge-app .report-section .rl-dashboard .coverage-warning {
+  margin-top: 16px;
+  border: 1px solid oklch(0.86 0.09 75 / 65%);
+  border-radius: 10px;
+  background: oklch(0.98 0.035 85);
+  padding: 10px 12px;
+  line-height: 1.6;
+}
+
+@media (max-width: 520px) {
+  .forge-app .report-section .rl-dashboard .score-panel {
+    min-height: 0;
+  }
+
+  .forge-app .report-section .rl-dashboard .score-panel .score-ring,
+  .forge-app .report-section .rl-dashboard .score-panel .score-ring-value {
+    width: 164px;
+    height: 164px;
+  }
+
+  .forge-app .report-section .rl-dashboard .score-panel .score-summary-cell,
+  .forge-app .report-section .rl-dashboard .profile-stat {
+    padding: 11px;
+  }
+
+  .forge-app .report-section .rl-dashboard .profile-header .panel-title {
+    font-size: 21px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .forge-app .report-section .rl-dashboard .score-panel .score-progress,
+  .forge-app .report-section .rl-dashboard .score-panel .score-ring-glow {
+    animation: none;
+  }
+}
+
+/* RepoLens Overview typography and hierarchy refinement */
+.forge-app .report-section .rl-dashboard .overview-grid .panel-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: oklch(0.49 0.19 264);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.forge-app .report-section .rl-dashboard .overview-grid .panel-kicker::before {
+  width: 17px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--rl-accent);
+  content: "";
+}
+
+.forge-app .report-section .rl-dashboard .overview-grid .panel-title {
+  margin-top: 11px;
+  color: oklch(0.19 0.035 260);
+  font-size: clamp(23px, 2vw, 29px);
+  font-weight: 780;
+  letter-spacing: -0.065em;
+  line-height: 1.12;
+}
+
+.forge-app .report-section .rl-dashboard .overview-grid .panel-subtitle {
+  max-width: 34ch;
+  margin-top: 9px;
+  color: oklch(0.49 0.025 260);
+  font-size: 12px;
+  font-weight: 450;
+  letter-spacing: 0.005em;
+  line-height: 1.75;
+}
+
+.forge-app .report-section .rl-dashboard .score-panel .score-ring-wrap {
+  margin-top: 22px;
+}
+
+.forge-app .report-section .rl-dashboard .score-panel .score-number {
+  font-size: 68px;
+  font-weight: 820;
+  letter-spacing: -0.095em;
+  line-height: 0.95;
+  font-variant-numeric: tabular-nums;
+}
+
+.forge-app .report-section .rl-dashboard .score-panel .score-out-of {
+  margin-top: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.17em;
+}
+
+.forge-app .report-section .rl-dashboard .score-panel .rating-pill {
+  margin-top: 7px;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: -0.01em;
+}
+
+.forge-app .report-section .rl-dashboard .score-panel .score-summary-label {
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.015em;
+}
+
+.forge-app .report-section .rl-dashboard .score-panel .score-summary-value {
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: -0.065em;
+  line-height: 1.1;
+}
+
+.forge-app .report-section .rl-dashboard .profile-header .panel-title {
+  font-size: clamp(25px, 2.2vw, 30px);
+  letter-spacing: -0.07em;
+}
+
+.forge-app .report-section .rl-dashboard .profile-header .language-pill {
+  flex-shrink: 0;
+  padding: 7px 11px;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: -0.01em;
+}
+
+.forge-app .report-section .rl-dashboard .profile-stat dt {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  line-height: 1.5;
+}
+
+.forge-app .report-section .rl-dashboard .profile-stat dd {
+  font-size: clamp(15px, 1.3vw, 17px);
+  font-weight: 780;
+  letter-spacing: -0.04em;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 520px) {
+  .forge-app .report-section .rl-dashboard .overview-grid .panel-title {
+    font-size: 24px;
+  }
+
+  .forge-app .report-section .rl-dashboard .score-panel .score-number {
+    font-size: 61px;
+  }
+
+  .forge-app .report-section .rl-dashboard .score-panel .score-summary-value {
+    font-size: 23px;
+  }
+}
+
+/* RepoLens Phase 4 — repository report card polish */
+/* Scoped to the report dashboard; landing and Overview styling remain unchanged. */
+
+.forge-app .report-section .rl-dashboard .category-card,
+.forge-app .report-section .rl-dashboard .finding-card,
+.forge-app .report-section .rl-dashboard .recommendation-card {
+  position: relative;
+  border-radius: 16px !important;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease !important;
+}
+
+.forge-app .report-section .rl-dashboard .category-card {
+  padding: 22px;
+}
+
+.forge-app .report-section .rl-dashboard .category-card-top {
+  margin-bottom: 19px;
+}
+
+.forge-app .report-section .rl-dashboard .category-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--rl-border);
+  border-radius: 12px;
+  background: var(--rl-accent-soft);
+}
+
+.forge-app .report-section .rl-dashboard .category-score {
+  font-size: 29px;
+  font-weight: 780;
+  letter-spacing: -0.055em;
+  font-variant-numeric: tabular-nums;
+}
+
+.forge-app .report-section .rl-dashboard .score-denominator {
+  margin-left: 2px;
+  color: var(--rl-text-muted);
+  font-size: 11px;
+  font-weight: 550;
+  letter-spacing: 0;
+}
+
+.forge-app .report-section .rl-dashboard .category-title {
+  margin-bottom: 7px;
+  color: var(--rl-text) !important;
+  font-size: 14px;
+  font-weight: 720;
+  letter-spacing: -0.025em;
+}
+
+.forge-app .report-section .rl-dashboard .category-description {
+  min-height: 34px;
+  color: var(--rl-text-muted) !important;
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+.forge-app .report-section .rl-dashboard .meter-track {
+  height: 6px;
+  margin-top: 17px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--rl-border);
+}
+
+.forge-app .report-section .rl-dashboard .meter-fill {
+  height: 100%;
+  border-radius: inherit;
+  transition: width 350ms ease;
+}
+
+.forge-app .report-section .rl-dashboard .category-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+  color: var(--rl-text-muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.forge-app .report-section .rl-dashboard .category-meta span:last-child {
+  color: var(--rl-text);
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.forge-app .report-section .rl-dashboard .finding-card {
+  padding: 21px;
+}
+
+.forge-app .report-section .rl-dashboard .finding-topline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.forge-app .report-section .rl-dashboard .severity-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 9px;
+  border: 1px solid var(--rl-border);
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.035em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.forge-app .report-section .rl-dashboard .finding-category,
+.forge-app .report-section .rl-dashboard .finding-confidence {
+  color: var(--rl-text-muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.forge-app .report-section .rl-dashboard .finding-title {
+  margin-bottom: 8px;
+  color: var(--rl-text) !important;
+  font-size: 14px;
+  font-weight: 730;
+  letter-spacing: -0.025em;
+  line-height: 1.5;
+}
+
+.forge-app .report-section .rl-dashboard .finding-description {
+  color: var(--rl-text-muted) !important;
+  font-size: 12px;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+
+.forge-app .report-section .rl-dashboard .file-reference {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--rl-border);
+  border-radius: 10px;
+  background: var(--rl-surface-muted, #f7f8fb);
+}
+
+.forge-app .report-section .rl-dashboard .file-reference svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: var(--rl-accent);
+}
+
+.forge-app .report-section .rl-dashboard .file-reference code {
+  color: var(--rl-text);
+  font-size: 10px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.forge-app .report-section .rl-dashboard .finding-recommendation {
+  margin-top: 14px;
+  padding: 13px 14px;
+  border: 1px solid var(--rl-border);
+  border-left: 3px solid var(--rl-accent);
+  border-radius: 10px;
+  background: var(--rl-accent-soft);
+}
+
+.forge-app .report-section .rl-dashboard .recommendation-heading {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 6px;
+  color: var(--rl-accent);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+
+.forge-app .report-section .rl-dashboard .finding-recommendation p {
+  color: var(--rl-text) !important;
+  font-size: 11px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.forge-app .report-section .rl-dashboard .finding-expand {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 15px;
+  padding: 8px 0;
+  color: var(--rl-accent);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.forge-app .report-section .rl-dashboard .finding-extra {
+  margin-top: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--rl-border);
+}
+
+.forge-app .report-section .rl-dashboard .category-card:hover,
+.forge-app .report-section .rl-dashboard .finding-card:hover,
+.forge-app .report-section .rl-dashboard .recommendation-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--rl-accent) !important;
+  box-shadow: 0 10px 26px rgba(37, 99, 235, 0.075) !important;
+}
+
+.forge-app .report-section .rl-dashboard .filter-button {
+  min-height: 36px;
+  padding: 8px 12px;
+  border: 1px solid var(--rl-border);
+  background: var(--rl-surface);
+  color: var(--rl-text-muted);
+  font-size: 11px;
+  font-weight: 650;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.forge-app .report-section .rl-dashboard .filter-button.active {
+  border-color: var(--rl-accent);
+  background: var(--rl-accent-soft);
+  color: var(--rl-accent);
+}
+
+.forge-app .report-section .rl-dashboard .filter-count {
+  font-variant-numeric: tabular-nums;
+}
+
+.forge-app .report-section .rl-dashboard .findings-grid,
+.forge-app .report-section .rl-dashboard .recommendation-grid {
+  gap: 16px;
+}
+
+@media (max-width: 700px) {
+  .forge-app .report-section .rl-dashboard .category-card,
+  .forge-app .report-section .rl-dashboard .finding-card,
+  .forge-app .report-section .rl-dashboard .recommendation-card {
+    border-radius: 13px !important;
+  }
+
+  .forge-app .report-section .rl-dashboard .category-card,
+  .forge-app .report-section .rl-dashboard .finding-card {
+    padding: 17px;
+  }
+
+  .forge-app .report-section .rl-dashboard .category-description {
+    min-height: auto;
+  }
+
+  .forge-app .report-section .rl-dashboard .category-meta {
+    flex-wrap: wrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .forge-app .report-section .rl-dashboard .category-card,
+  .forge-app .report-section .rl-dashboard .finding-card,
+  .forge-app .report-section .rl-dashboard .recommendation-card,
+  .forge-app .report-section .rl-dashboard .meter-fill,
+  .forge-app .report-section .rl-dashboard .filter-button {
+    transition: none !important;
+  }
+
+  .forge-app .report-section .rl-dashboard .category-card:hover,
+  .forge-app .report-section .rl-dashboard .finding-card:hover,
+  .forge-app .report-section .rl-dashboard .recommendation-card:hover {
+    transform: none;
+  }
+}
+
+/* RepoLens AI action-plan completion progress */
+.forge-app .report-section .rl-dashboard .ai-task-progress-track {
+  width: 100%;
+  height: 7px;
+  margin: 0 0 16px;
+  overflow: hidden;
+  border: 1px solid var(--rl-border);
+  border-radius: 999px;
+  background: var(--rl-surface-muted, #edf1f7);
+}
+
+.forge-app .report-section .rl-dashboard .ai-task-progress-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--rl-accent, #2859d6);
+  transition: width 180ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .forge-app .report-section .rl-dashboard .ai-task-progress-fill {
+    transition: none;
+  }
+}
+/* RepoLens AI panel visual polish */
+
+/* RepoLens AI panel visual polish */
+.forge-app .report-section .rl-dashboard .ai-panel {
+  overflow: hidden;
+}
+
+.forge-app .report-section .rl-dashboard .ai-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding-bottom: 22px;
+}
+
+.forge-app .report-section .rl-dashboard .ai-panel-intro {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.forge-app .report-section .rl-dashboard .ai-status-icon {
+  display: grid;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border: 1px solid rgba(99, 130, 255, 0.3);
+  border-radius: 14px;
+  background: rgba(59, 91, 219, 0.1);
+  color: var(--rl-accent, #6382ff);
+}
+
+.forge-app .report-section .rl-dashboard .ai-panel-intro h3 {
+  margin: 0 0 5px;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.forge-app .report-section .rl-dashboard .ai-panel-intro p {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.forge-app .report-section .rl-dashboard .ai-panel .outline-button {
+  flex-shrink: 0;
+  min-height: 42px;
+  border-radius: 11px;
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+.forge-app .report-section .rl-dashboard .ai-panel .outline-button:hover:not(:disabled) {
+  border-color: var(--rl-accent, #6382ff);
+  transform: translateY(-1px);
+}
+
+.forge-app .report-section .rl-dashboard .ai-disclaimer {
+  margin: 16px 0 22px;
+  padding: 12px 14px;
+  border: 1px solid var(--rl-border);
+  border-radius: 11px;
+  font-size: 0.8rem;
+  line-height: 1.65;
+}
+
+.forge-app .report-section .rl-dashboard .ai-summary {
+  padding: 22px;
+  border: 1px solid var(--rl-border);
+  border-radius: 16px;
+  background: var(--rl-surface);
+}
+
+.forge-app .report-section .rl-dashboard .ai-kicker {
+  display: inline-block;
+  font-size: 0.69rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  line-height: 1.5;
+}
+
+.forge-app .report-section .rl-dashboard .ai-summary > p {
+  margin: 12px 0 18px;
+  font-size: 1rem;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.forge-app .report-section .rl-dashboard .ai-model-label {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: var(--rl-text-muted);
+}
+
+.forge-app .report-section .rl-dashboard .ai-model-dot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 50%;
+  background: #36b37e;
+  box-shadow: 0 0 0 3px rgba(54, 179, 126, 0.12);
+}
+
+.forge-app .report-section .rl-dashboard .ai-subsection {
+  margin-top: 28px;
+}
+
+.forge-app .report-section .rl-dashboard .ai-subsection-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.forge-app .report-section .rl-dashboard .ai-subsection-heading h3 {
+  margin: 6px 0 0;
+  font-size: clamp(1.05rem, 2vw, 1.3rem);
+  line-height: 1.35;
+  letter-spacing: -0.035em;
+}
+
+.forge-app .report-section .rl-dashboard .ai-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 5px 10px;
+  border: 1px solid var(--rl-border);
+  border-radius: 999px;
+  color: var(--rl-text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.forge-app .report-section .rl-dashboard .ai-insight-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.forge-app .report-section .rl-dashboard .ai-insight-card {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--rl-border);
+  border-radius: 14px;
+  background: var(--rl-surface);
+  transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.forge-app .report-section .rl-dashboard .ai-insight-card:hover {
+  border-color: var(--rl-accent, #6382ff);
+  transform: translateY(-2px);
+}
+
+.forge-app .report-section .rl-dashboard .ai-insight-top,
+.forge-app .report-section .rl-dashboard .ai-task-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.forge-app .report-section .rl-dashboard .ai-insight-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 30px;
+  padding: 0 7px;
+  border-radius: 8px;
+  background: rgba(99, 130, 255, 0.11);
+  color: var(--rl-accent, #6382ff);
+  font-size: 0.76rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.forge-app .report-section .rl-dashboard .ai-priority {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 5px 9px;
+  border: 1px solid var(--rl-border);
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 750;
+  line-height: 1.3;
+  text-transform: capitalize;
+}
+
+.forge-app .report-section .rl-dashboard .ai-priority-high {
+  border-color: rgba(225, 75, 75, 0.3);
+  background: rgba(225, 75, 75, 0.09);
+  color: #e87979;
+}
+
+.forge-app .report-section .rl-dashboard .ai-priority-medium {
+  border-color: rgba(217, 145, 42, 0.3);
+  background: rgba(217, 145, 42, 0.09);
+  color: #d9a34d;
+}
+
+.forge-app .report-section .rl-dashboard .ai-priority-low {
+  border-color: rgba(54, 179, 126, 0.3);
+  background: rgba(54, 179, 126, 0.09);
+  color: #43b98a;
+}
+
+.forge-app .report-section .rl-dashboard .ai-insight-card h4,
+.forge-app .report-section .rl-dashboard .ai-task-content h4 {
+  margin: 16px 0 8px;
+  font-size: 0.96rem;
+  font-weight: 750;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.forge-app .report-section .rl-dashboard .ai-insight-card > p,
+.forge-app .report-section .rl-dashboard .ai-task-content > p {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+
+.forge-app .report-section .rl-dashboard .ai-evidence-label {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 15px;
+  padding-top: 12px;
+  border-top: 1px solid var(--rl-border);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: var(--rl-text-muted);
+}
+
+.forge-app .report-section .rl-dashboard .ai-evidence-label code {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.forge-app .report-section .rl-dashboard .ai-evidence-matched > span:first-of-type {
+  color: #43b98a;
+  font-weight: 700;
+}
+
+.forge-app .report-section .rl-dashboard .ai-evidence-general > span {
+  color: var(--rl-text-muted);
+}
+
+.forge-app .report-section .rl-dashboard .ai-task-list {
+  display: grid;
+  gap: 12px;
+  border: 0;
+  background: transparent;
+}
+
+.forge-app .report-section .rl-dashboard .ai-task {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: start;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--rl-border);
+  border-radius: 14px;
+  background: var(--rl-surface);
+  transition: border-color 160ms ease, opacity 160ms ease;
+}
+
+.forge-app .report-section .rl-dashboard .ai-task:hover {
+  border-color: var(--rl-accent, #6382ff);
+}
+
+.forge-app .report-section .rl-dashboard .ai-task-checkbox {
+  display: inline-flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin-top: 3px;
+  cursor: pointer;
+}
+
+.forge-app .report-section .rl-dashboard .ai-task-checkbox input {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.forge-app .report-section .rl-dashboard .ai-checkbox-mark {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border: 1px solid var(--rl-border);
+  border-radius: 7px;
+  background: var(--rl-surface);
+  color: transparent;
+  transition: background 140ms ease, border-color 140ms ease, color 140ms ease;
+  pointer-events: none;
+}
+
+.forge-app .report-section .rl-dashboard .ai-task-checkbox input:focus-visible + .ai-checkbox-mark {
+  outline: 3px solid var(--rl-accent, #6382ff);
+  outline-offset: 3px;
+}
+
+.forge-app .report-section .rl-dashboard .ai-task-checkbox input:checked + .ai-checkbox-mark {
+  border-color: var(--rl-accent, #6382ff);
+  background: var(--rl-accent, #6382ff);
+  color: #ffffff;
+}
+
+.forge-app .report-section .rl-dashboard .ai-task-content {
+  min-width: 0;
+}
+
+.forge-app .report-section .rl-dashboard .ai-task-top .ai-task-number {
+  color: var(--rl-text-muted);
+  font-size: 0.69rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+}
+
+.forge-app .report-section .rl-dashboard .ai-task-content h4 {
+  margin-top: 12px;
+}
+
+.forge-app .report-section .rl-dashboard .ai-task-complete {
+  border-color: rgba(54, 179, 126, 0.3);
+}
+
+.forge-app .report-section .rl-dashboard .ai-task-complete .ai-task-content h4 {
+  text-decoration: line-through;
+  text-decoration-color: var(--rl-text-muted);
+  opacity: 0.75;
+}
+
+.forge-app .report-section .rl-dashboard .ai-empty-state {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 24px;
+  border: 1px dashed var(--rl-border);
+  border-radius: 15px;
+  background: var(--rl-surface);
+}
+
+.forge-app .report-section .rl-dashboard .ai-empty-icon {
+  display: grid;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border: 1px solid rgba(99, 130, 255, 0.25);
+  border-radius: 13px;
+  background: rgba(59, 91, 219, 0.1);
+  color: var(--rl-accent, #6382ff);
+}
+
+.forge-app .report-section .rl-dashboard .ai-empty-state h3 {
+  margin: 2px 0 7px;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.forge-app .report-section .rl-dashboard .ai-empty-state p,
+.forge-app .report-section .rl-dashboard .ai-empty {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.7;
+}
+
+.forge-app .report-section .rl-dashboard .ai-loading,
+.forge-app .report-section .rl-dashboard .ai-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 18px;
+  border: 1px solid var(--rl-border);
+  border-radius: 14px;
+}
+
+@media (max-width: 760px) {
+  .forge-app .report-section .rl-dashboard .ai-insight-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .forge-app .report-section .rl-dashboard .ai-panel-header {
+    align-items: stretch;
+  }
+
+  .forge-app .report-section .rl-dashboard .ai-panel-header > .outline-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .forge-app .report-section .rl-dashboard .ai-summary,
+  .forge-app .report-section .rl-dashboard .ai-insight-card,
+  .forge-app .report-section .rl-dashboard .ai-task,
+  .forge-app .report-section .rl-dashboard .ai-empty-state {
+    padding: 14px;
+  }
+
+  .forge-app .report-section .rl-dashboard .ai-empty-state {
+    gap: 12px;
+  }
+
+  .forge-app .report-section .rl-dashboard .ai-empty-icon {
+    flex-basis: 36px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .forge-app .report-section .rl-dashboard .ai-task {
+    grid-template-columns: 22px minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .forge-app .report-section .rl-dashboard .ai-subsection-heading {
+    align-items: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .forge-app .report-section .rl-dashboard .ai-panel .outline-button,
+  .forge-app .report-section .rl-dashboard .ai-insight-card,
+  .forge-app .report-section .rl-dashboard .ai-task,
+  .forge-app .report-section .rl-dashboard .ai-checkbox-mark {
+    transition: none;
+  }
+
+  .forge-app .report-section .rl-dashboard .ai-insight-card:hover,
+  .forge-app .report-section .rl-dashboard .ai-panel .outline-button:hover:not(:disabled) {
+    transform: none;
+  }
+}
